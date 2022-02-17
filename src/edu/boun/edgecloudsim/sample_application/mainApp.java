@@ -148,7 +148,9 @@ public class mainApp {
 						SimManager manager = new SimManager(sampleFactory, iteMobileDevices, simScenario);
 						SimLogger.printLine("SimManager reached");
 						// Start simulation
-						manager.startSimulation();
+						Thread managerThread = new Thread(new ManagerRunner(manager));
+						managerThread.start();
+						// manager.startSimulation();
 					}
 					catch (Exception e)
 					{
@@ -168,5 +170,24 @@ public class mainApp {
 		Date SimulationEndDate = Calendar.getInstance().getTime();
 		now = df.format(SimulationEndDate);
 		SimLogger.printLine("Simulation finished at " + now +  ". It took " + SimUtils.getTimeDifference(SimulationStartDate,SimulationEndDate));
+	}
+}
+
+class ManagerRunner implements Runnable{
+	SimManager manager;
+	public ManagerRunner(SimManager manager){
+		this.manager = manager;
+	}
+	@Override
+	public void run() {
+		try {
+			manager.startSimulation();
+		}
+		catch (Exception e)
+		{
+			SimLogger.printLine("The simulation has been terminated due to an unexpected error");
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 }
