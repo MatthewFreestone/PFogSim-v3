@@ -10,6 +10,7 @@ import edu.auburn.pFogSim.Exceptions.BlackHoleException;
 import edu.boun.edgecloudsim.utils.Location;
 import java.util.LinkedList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.ArrayList;
 // import javafx.util.Pair;
@@ -18,6 +19,7 @@ import java.util.PriorityQueue;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Collections;
 
 
 /**
@@ -28,7 +30,7 @@ import java.util.TreeMap;
 public class Router {
 	private HashMap<String, LinkedList<NodeSim>> database;
 	
-	private HashMap<NodeSim, HashMap<NodeSim, LinkedList<NodeSim>>> pathFinder = new HashMap<>();
+	private Map<NodeSim, Map<NodeSim, LinkedList<NodeSim>>> pathFinder = Collections.synchronizedMap(new HashMap<>());
 	
 	/**
 	 * 
@@ -83,7 +85,7 @@ public class Router {
 		for (Pair<NodeSim, Pair<Double, NodeSim>> nodePair : router.verts.keySet()) {
 			NodeSim node = nodePair.getKey();
 			if (!pathFinder.containsKey(src)) {
-				pathFinder.put(src, new HashMap<>());
+				pathFinder.put(src, Collections.synchronizedMap(new HashMap<>()));
 			}
 			if (!pathFinder.get(src).containsKey(node) || pathFinder.get(src).get(node).isEmpty()) {
 				pathFinder.get(src).put(node, router.getPath(node));
